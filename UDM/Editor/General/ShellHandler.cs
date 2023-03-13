@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Debug = UnityEngine.Debug;
 
-namespace UDM.Handlers.Editor {
+namespace UDM.Handlers {
 	public class ShellHandler {
 		
 		public static string ExecuteShellCommand(string command, Action<Process> processOptions = null) {

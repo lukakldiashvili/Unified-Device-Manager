@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace UDM.Settings {
+namespace UDM {
 	public class Settings {
 		
 		private const string ADB_Path_Key = "UDM_ADB_Path";

@@ -1,35 +1,29 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UDM.Helpers;
+using UDM.Toolbar;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 
 namespace UDM {
-	public partial class UDMPanel : EditorWindow {
+	public partial class PopupPanel : EditorWindow {
 		private static readonly Vector2 s_windowSize = new Vector2(250, 150);
-
-		private const string MAIN_ICON_GUID = "4a2c0e3bd7d7a4b379ca986b22cc48e9";
 
 		private const int MAX_BUTTON_WIDTH = 42;
 		private const int MAX_BUTTON_HEIGHT = 36;
 
-		private Texture2D m_mainIconTexture;
 
 		private GUILayoutOption[] m_buttonOptions;
 
-		private UDMButton_Data[] m_buttons;
+		private Button_Data[] m_buttons;
 
 		private DevicesManager m_devicesManager;
 
-		[ToolbarButton("d164c837878644cd79b7bf331acf6381", isLeftSide: true)]
+		[ToolbarButton(Constants.Icons.MAIN_ICON_GUID, isLeftSide: true)]
 		public static void OpenUDMPanel_Button() {
 			CloseAllInstances();
 
-			UDMPanel window = ScriptableObject.CreateInstance<UDMPanel>();
+			PopupPanel window = ScriptableObject.CreateInstance<PopupPanel>();
 
 			float yPos = Event.current.mousePosition.y + (s_windowSize.y / 2 - 10);
 
@@ -41,7 +35,7 @@ namespace UDM {
 		}
 
 		public static void CloseAllInstances() {
-			var windows = (UDMPanel[])Resources.FindObjectsOfTypeAll(typeof(UDMPanel));
+			var windows = (PopupPanel[])Resources.FindObjectsOfTypeAll(typeof(PopupPanel));
 
 			foreach (var window in windows) {
 				window.Close();
@@ -49,13 +43,13 @@ namespace UDM {
 		}
 
 		void OnGUI() {
+			if (!CheckBeforeGUI()) return;
+
 			EditorGUILayout.BeginHorizontal();
 
 			GUI_DrawMainButtons();
 
 			EditorGUILayout.EndHorizontal();
-			
-			EditorGUILayout.Space(10);
 
 			m_devicesManager.GUI_DrawDropdown();
 		}
@@ -67,7 +61,6 @@ namespace UDM {
 		public void Init() {
 			m_devicesManager = DevicesManager.GetOrCreate();
 			
-			LoadAssets();
 			LoadButtons();
 
 			m_buttonOptions = new[] {
@@ -76,36 +69,56 @@ namespace UDM {
 		}
 
 		void LoadButtons() {
-			var buttonMethods = typeof(UDMPanel).GetMethods()
-			                .Where(method => method.GetCustomAttributes().Any(attr => attr is UDMButtonMethod));
+			var allMethods =
+				typeof(PopupPanel).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+			var buttonMethods = allMethods
+			                .Where(method => method.GetCustomAttributes().Any(attr => attr is ButtonMethodAttribute));
 
-			buttonMethods = buttonMethods.OrderBy(method => method.GetCustomAttribute<UDMButtonMethod>().priority);
+			buttonMethods = buttonMethods.OrderBy(method => method.GetCustomAttribute<ButtonMethodAttribute>().priority);
 
 			m_buttons = buttonMethods.Select(method => {
-				var methodAttr = method.GetCustomAttribute<UDMButtonMethod>();
+				var methodAttr = method.GetCustomAttribute<ButtonMethodAttribute>();
+				var conditionMethodInfo = allMethods.FirstOrDefault(m => m.Name == methodAttr.condition);
+
+				bool enabled = conditionMethodInfo == null || (bool) conditionMethodInfo.Invoke(this, null);
 				
-				return new UDMButton_Data() {
+				return new Button_Data() {
 					methodInfo = method,
-					icon       = UDMHelpers.LoadTextureWithGUID(methodAttr.iconGUID),
+					enabled    = enabled,
+					icon       = Utilities.LoadTextureWithGUID(methodAttr.iconGUID),
 					tooltip    = methodAttr.tooltip
 				};
 			}).ToArray();
 		}
 
-		void LoadAssets() {
-			m_mainIconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(MAIN_ICON_GUID));
-		}
-		
-
 		private void OnLostFocus() {
 			this.Close();
 		}
 
+		bool CheckBeforeGUI() {
+			if (m_devicesManager.GetAndroids.Length != 0) {
+				return true;
+			}
+
+			EditorGUILayout.LabelField("No devices found.");
+			EditorGUILayout.LabelField("Please connect your device and try again.");
+
+			if (GUILayout.Button("Close")) {
+				Close();
+			}
+			
+			return false;
+		}
+
 		void GUI_DrawMainButtons() {
 			foreach (var buttonData in m_buttons) {
+				EditorGUI.BeginDisabledGroup(!buttonData.enabled);
+				
 				if (GUILayout.Button(new GUIContent(image: buttonData.icon, tooltip: buttonData.tooltip), m_buttonOptions)) {
 					buttonData.methodInfo?.Invoke(this, null);
 				}
+				
+				EditorGUI.EndDisabledGroup();
 			}
 		}
 	}

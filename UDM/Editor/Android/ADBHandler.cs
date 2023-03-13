@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
+using UDM.Handlers;
 using UnityEditor.Android;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
 
-namespace UDM.Handlers.Editor {
+namespace UDM.Android {
 	public static class ADBHandler {
 		
 		public static string GetAdbPath => AndroidExternalToolsSettings.sdkRootPath + "/platform-tools/adb";

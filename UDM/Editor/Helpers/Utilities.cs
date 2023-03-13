@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
 
 namespace UDM.Helpers {
-	public class UDMHelpers {
+	public class Utilities {
 		public static Texture2D LoadTextureWithGUID(string guid) =>
 			AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guid));
 		
@@ -29,6 +33,12 @@ namespace UDM.Helpers {
 				T obj = binForm.Deserialize(memStream) as T;
 				return obj;
 			}
+		}
+		
+		public static IEnumerable<Type> GetTypes(IEnumerable<Assembly> fromAssemblies)
+			=> fromAssemblies.SelectMany(asm => asm.GetTypes(), (_, type) => type);
+		public static IEnumerable<MethodInfo> GetMethodsWithAttribute(IEnumerable<Assembly> fromAssemblies, Type attributeType, BindingFlags methodsFlags = BindingFlags.Default) {
+			return GetTypes(fromAssemblies).SelectMany(type => type.GetMethods(methodsFlags), (_, methodInfo) => methodInfo).Where(method => Attribute.IsDefined(method, attributeType));
 		}
 	}
 }

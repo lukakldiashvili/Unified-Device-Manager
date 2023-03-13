@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UDM.Handlers.Editor;
 
-namespace UDM {
+namespace UDM.Android {
 	public class ADBQuery {
 
 		private string m_command;

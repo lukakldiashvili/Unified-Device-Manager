@@ -1,9 +1,7 @@
 using System;
-using System.Text.RegularExpressions;
 using UDM.Helpers;
-using UnityEngine;
 
-namespace UDM {
+namespace UDM.Android {
 	[Serializable]
 	public class ADBDevice {
 		public string SerialOrIP { get; set; }

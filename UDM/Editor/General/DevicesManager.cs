@@ -1,14 +1,11 @@
 using System;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
-using UDM.Handlers.Editor;
+using UDM.Android;
 using UDM.Helpers;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UDM {
 	[Serializable]
@@ -34,7 +31,12 @@ namespace UDM {
 			var prevState = SessionState.GetString(SESSION_STATE_KEY, String.Empty);
 
 			if (!String.IsNullOrEmpty(prevState)) {
-				manager = UDMHelpers.ByteArrayToObject<DevicesManager>(Convert.FromBase64String(prevState));
+				try {
+					manager = Utilities.ByteArrayToObject<DevicesManager>(Convert.FromBase64String(prevState));
+				}
+				catch (Exception e) {
+					manager = new DevicesManager();
+				}
 			}
 			else {
 				manager = new DevicesManager();
@@ -78,6 +80,8 @@ namespace UDM {
 		// }
 		
 		public void GUI_DrawDropdown() {
+			EditorGUILayout.Space(10);
+
 			EditorGUI.BeginChangeCheck();
 				
 			EditorGUILayout.LabelField($"Selected Device:");
@@ -90,7 +94,7 @@ namespace UDM {
 		}
 		
 		public void SaveState() {
-			var bytes = UDMHelpers.ObjectToByteArray(this);
+			var bytes = Utilities.ObjectToByteArray(this);
 
 			var str = Convert.ToBase64String(bytes);
 			
