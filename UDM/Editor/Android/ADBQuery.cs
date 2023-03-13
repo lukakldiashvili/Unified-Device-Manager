@@ -13,8 +13,8 @@ namespace UDM.Android {
 			m_command = command;
 		}
 
-		public ADBQuery SetDevice(DevicesManager devicesManager) {
-			m_device = devicesManager.GetActiveAndroid.SerialOrIP;
+		public ADBQuery SetDevice(DeviceManager deviceManager) {
+			m_device = deviceManager.GetActiveAndroid.SerialOrIP;
 			
 			return this;
 		}

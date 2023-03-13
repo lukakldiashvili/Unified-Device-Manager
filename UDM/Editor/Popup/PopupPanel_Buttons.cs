@@ -25,17 +25,17 @@ namespace UDM {
 		
 		[ButtonMethod(iconGUID: Constants.Icons.ADB_WIRELESS_GUID, tooltip: "ADB connect Wireless", condition: nameof(ConnectAdbWireless_Condition))]
 		public void ConnectAdbWireless() {
-			var    msg = new ADBQuery("shell ip -f inet addr show wlan0").SetDevice(m_devicesManager).Execute();
+			var    msg = new ADBQuery("shell ip -f inet addr show wlan0").SetDevice(m_deviceManager).Execute();
 			string ip = RegExHelpers.GetIPFromADBMessage(msg);
 
 			Thread.Sleep(500);
 
-			new ADBQuery("tcpip 5555").SetDevice(m_devicesManager).Execute();
+			new ADBQuery("tcpip 5555").SetDevice(m_deviceManager).Execute();
 			
 			Thread.Sleep(500);
 			
 			//connect
-			new ADBQuery($"connect {ip}:5555").SetDevice(m_devicesManager).Execute();
+			new ADBQuery($"connect {ip}:5555").SetDevice(m_deviceManager).Execute();
 			
 			CloseAllInstances();
 		}
@@ -55,7 +55,7 @@ namespace UDM {
 			StopRunningApp();
 			
 			if (BuildHandler.TryGetLastBuildPath(out var path)) {
-				new ADBQuery($"install {path}").SetDevice(m_devicesManager).Execute();
+				new ADBQuery($"install {path}").SetDevice(m_deviceManager).Execute();
 
 				StartInstalledAppActivity();
 			}
@@ -65,13 +65,13 @@ namespace UDM {
 		public void StartInstalledAppActivity() {
 			var cmd = $"shell am start -n {Application.identifier}/com.unity3d.player.UnityPlayerActivity";
 
-			new ADBQuery(cmd).SetDevice(m_devicesManager).Execute();
+			new ADBQuery(cmd).SetDevice(m_deviceManager).Execute();
 		}
 		
 		public void StopRunningApp() {
 			var cmd = $"shell am force-stop {Application.identifier}";
 
-			new ADBQuery(cmd).SetDevice(m_devicesManager).Execute();
+			new ADBQuery(cmd).SetDevice(m_deviceManager).Execute();
 		}
 
 	}

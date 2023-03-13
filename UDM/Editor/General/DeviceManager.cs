@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UDM {
 	[Serializable]
-	public class DevicesManager {
+	public class DeviceManager {
 		
 		private const string SESSION_STATE_KEY = "UDM.DevicesManager.State";
 		
@@ -25,21 +25,21 @@ namespace UDM {
 
 		[SerializeField] private string m_stateHash = string.Empty;
 
-		public static DevicesManager GetOrCreate() {
-			DevicesManager manager = null;
+		public static DeviceManager GetOrCreate() {
+			DeviceManager manager = null;
 			
 			var prevState = SessionState.GetString(SESSION_STATE_KEY, String.Empty);
 
 			if (!String.IsNullOrEmpty(prevState)) {
 				try {
-					manager = Utilities.ByteArrayToObject<DevicesManager>(Convert.FromBase64String(prevState));
+					manager = Utilities.ByteArrayToObject<DeviceManager>(Convert.FromBase64String(prevState));
 				}
 				catch (Exception e) {
-					manager = new DevicesManager();
+					manager = new DeviceManager();
 				}
 			}
 			else {
-				manager = new DevicesManager();
+				manager = new DeviceManager();
 			}
 			
 			manager.Init();
@@ -84,7 +84,7 @@ namespace UDM {
 
 			EditorGUI.BeginChangeCheck();
 				
-			EditorGUILayout.LabelField($"Selected Device:");
+			EditorGUILayout.LabelField($"Selected Device ({m_androidDeviceOptions.Length}):");
 			m_activeAndroidIndex = EditorGUILayout.Popup(String.Empty, m_activeAndroidIndex, m_androidDeviceOptions);
 			
 			if (EditorGUI.EndChangeCheck())

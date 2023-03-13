@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UDM {
 	public partial class PopupPanel : EditorWindow {
-		private static readonly Vector2 s_windowSize = new Vector2(250, 150);
+		private static readonly Vector2 s_windowSize = new Vector2(250, 400);
 
 		private const int MAX_BUTTON_WIDTH = 42;
 		private const int MAX_BUTTON_HEIGHT = 36;
@@ -17,7 +17,10 @@ namespace UDM {
 
 		private Button_Data[] m_buttons;
 
-		private DevicesManager m_devicesManager;
+		private DeviceManager m_deviceManager;
+
+		private Texture2D m_mainIconTexture;
+		private Rect m_controlRect;
 
 		[ToolbarButton(Constants.Icons.MAIN_ICON_GUID, isLeftSide: true)]
 		public static void OpenUDMPanel_Button() {
@@ -43,6 +46,8 @@ namespace UDM {
 		}
 
 		void OnGUI() {
+			GUI_TitleBar();
+			
 			if (!CheckBeforeGUI()) return;
 
 			EditorGUILayout.BeginHorizontal();
@@ -51,21 +56,38 @@ namespace UDM {
 
 			EditorGUILayout.EndHorizontal();
 
-			m_devicesManager.GUI_DrawDropdown();
+			m_deviceManager.GUI_DrawDropdown();
+
+			m_controlRect = EditorGUILayout.GetControlRect();
 		}
 
 		private void OnDestroy() {
-			m_devicesManager.SaveState();
+			m_deviceManager.SaveState();
 		}
 
 		public void Init() {
-			m_devicesManager = DevicesManager.GetOrCreate();
+			EditorApplication.delayCall += ResizeWindow;
+			
+			m_deviceManager = DeviceManager.GetOrCreate();
 			
 			LoadButtons();
 
 			m_buttonOptions = new[] {
 				GUILayout.MaxWidth(s_windowSize.x / m_buttons.Length), GUILayout.MaxHeight(MAX_BUTTON_HEIGHT)
 			};
+
+			m_mainIconTexture = Utilities.LoadTextureWithGUID(Constants.Icons.MAIN_ICON_GUID);
+		}
+
+		void ResizeWindow() {
+			var pos = position;
+			
+			float diff = m_controlRect.y - pos.height;
+
+			pos.y += diff / 2f;
+
+			pos.height = m_controlRect.y;
+			position   = pos;
 		}
 
 		void LoadButtons() {
@@ -96,7 +118,7 @@ namespace UDM {
 		}
 
 		bool CheckBeforeGUI() {
-			if (m_devicesManager.GetAndroids.Length != 0) {
+			if (m_deviceManager.GetAndroids.Length != 0) {
 				return true;
 			}
 
@@ -108,6 +130,10 @@ namespace UDM {
 			}
 			
 			return false;
+		}
+
+		void GUI_TitleBar() {
+			EditorGUILayout.LabelField(new GUIContent(image: m_mainIconTexture, text: "Unified Device Manager"), GUI.skin.button);
 		}
 
 		void GUI_DrawMainButtons() {
