@@ -27,15 +27,8 @@ namespace UDM {
 
 		[ToolbarButton("d164c837878644cd79b7bf331acf6381", isLeftSide: true)]
 		public static void OpenUDMPanel_Button() {
-			{
-				var windows = (UDMPanel[])Resources.FindObjectsOfTypeAll(typeof(UDMPanel));
+			CloseAllInstances();
 
-				foreach (var win in windows) {
-					win.Close();
-				}
-			}
-			
-			
 			UDMPanel window = ScriptableObject.CreateInstance<UDMPanel>();
 
 			float yPos = Event.current.mousePosition.y + (s_windowSize.y / 2 - 10);
@@ -45,6 +38,14 @@ namespace UDM {
 
 			window.Init();
 			window.Focus();
+		}
+
+		public static void CloseAllInstances() {
+			var windows = (UDMPanel[])Resources.FindObjectsOfTypeAll(typeof(UDMPanel));
+
+			foreach (var window in windows) {
+				window.Close();
+			}
 		}
 
 		void OnGUI() {

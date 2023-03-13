@@ -5,10 +5,15 @@ using UnityEngine;
 namespace UDM.Helpers {
 	public class RegExHelpers {
 		private const string ARGUMENT_PATTERN_FORMAT = "(?<={0}:)(\\S+)";
+		private const string IP_FROM_ADB_PATTERN = "(?<=inet\\s).*?(?=\\/)";
 		private const string FIRST_WORD_PATTERN = "(\\S+)";
 
 		public static string GetFirstWord(string line) {
 			return Match(FIRST_WORD_PATTERN, line);
+		}
+		
+		public static string GetIPFromADBMessage(string msg) {
+			return Match(IP_FROM_ADB_PATTERN, msg);
 		}
 		
 		public static string GetArgument(string line, string argumentName) {

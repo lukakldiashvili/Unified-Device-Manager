@@ -11,12 +11,8 @@ namespace UDM.Handlers.Editor {
 		public static string GetAdbPath => AndroidExternalToolsSettings.sdkRootPath + "/platform-tools/adb";
 
 
-		public static void StartInstalledAppActivity() {
-			ShellHandler.ExecuteCommand(GetAdbPath, GetActivityStartCommand(Application.identifier));
-		}
-
-		public static void StopRunningApp() {
-			ShellHandler.ExecuteCommand(GetAdbPath, GetActivityStopCommand(Application.identifier));
+		public static string ExecuteADBQuery(ADBQuery query) {
+			return ShellHandler.ExecuteCommand(GetAdbPath, query.ToString());
 		}
 
 		private static string GetActivityStartCommand(string identifier) {
