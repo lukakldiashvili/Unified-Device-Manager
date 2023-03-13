@@ -26,7 +26,7 @@ namespace UDM {
 		
 		private string[] m_androidDeviceOptions;
 
-		[SerializeField] private string m_stateHash;
+		[SerializeField] private string m_stateHash = string.Empty;
 
 		public static DevicesManager GetOrCreate() {
 			DevicesManager manager = null;
