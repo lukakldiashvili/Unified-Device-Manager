@@ -52,6 +52,8 @@ namespace UDM.Toolbar {
 		}
 
 		static void OnToolbarGUI(GUIContent toolbarContent, string guiStyle, Action onPress) {
+			EditorGUIUtility.SetIconSize(new Vector2(16, 16));
+			
 			if (GUILayout.Button(toolbarContent, guiStyle)) {
 				onPress?.Invoke();
 			}

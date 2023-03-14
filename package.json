@@ -1,0 +1,24 @@
+{
+    "name": "com.unify.unified-device-manager",
+    "displayName": "Unified Device Manager",
+    "description": "Unified Device Manager is a package that allows you to quickly build, deploy and run application on target device.",
+    "version": "0.1.0",
+    "unity": "2020.3",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lukakldiashvili/Unified-Device-Manager.git"
+    },
+    "author": {
+        "name": "Unify - Luka Kldiashvili",
+        "email": "contact@lukakldiashvili.com",
+        "url": "https://github.com/lukakldiashvili"
+    },
+    "dependencies": {},
+    "keywords": [
+        "unify",
+        "unified",
+        "device",
+        "manager"
+    ]
+}
