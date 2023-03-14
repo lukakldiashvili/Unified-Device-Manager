@@ -36,3 +36,8 @@ After installation, new button should appear in the toolbar <img width="36" alt=
 
 - Currently, this packge only supports Android build and it makes an assumption that default build/development platform is Android.
 - Apk build location is hardcoded at this time, and after building, you should consider adding that folder (_vcignore) to .gitignore or any other version control ignore file.
+
+
+### Credits
+
+- Toolbar button feature is based on: https://github.com/marijnz/unity-toolbar-extender
