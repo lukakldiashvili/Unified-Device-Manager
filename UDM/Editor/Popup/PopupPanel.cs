@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UDM.Helpers;
 using UDM.Toolbar;
 using UnityEditor;
@@ -141,11 +143,21 @@ namespace UDM {
 				EditorGUI.BeginDisabledGroup(!buttonData.enabled);
 				
 				if (GUILayout.Button(new GUIContent(image: buttonData.icon, tooltip: buttonData.tooltip), m_buttonOptions)) {
-					buttonData.methodInfo?.Invoke(this, null);
+					RunOnNewThread(() => {
+						buttonData.methodInfo?.Invoke(this, null);
+					});
 				}
 				
 				EditorGUI.EndDisabledGroup();
 			}
+		}
+
+		void RunOnNewThread(Action action) {
+			var thread = new Thread(() => {
+				action?.Invoke();
+			});
+			
+			thread.Start();
 		}
 	}
 }

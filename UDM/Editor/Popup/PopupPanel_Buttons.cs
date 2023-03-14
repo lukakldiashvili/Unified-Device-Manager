@@ -1,26 +1,30 @@
+using System.Linq;
 using System.Threading;
 using UDM.Android;
 using UDM.Build;
 using UDM.Helpers;
 using UnityEngine;
+using static UDM.MainThreadDispatcher;
 
 namespace UDM {
 	public partial class PopupPanel {
 		[ButtonMethod(iconGUID: Constants.Icons.BUILD_INSTALL_RUN_GUID, tooltip: "Build, Install and Run")]
 		public void Build_Install_Run() {
-			BuildHandler.StartAndroidBuild("_vcignore/Android/Android.apk", RunLastBuild);
+			EnqueueOnMainThread(() => {
+				BuildHandler.StartAndroidBuild("_vcignore/Android/Android.apk", RunLastBuild);
+			});
 		}
 		
 		[ButtonMethod(iconGUID: Constants.Icons.INSTALL_LAST_RUN_GUID, tooltip: "Install and Run")]
 		public void InstallLast_Run() {
-			RunLastBuild();
+			EnqueueOnMainThread(RunLastBuild);
 		}
 		
 		[ButtonMethod(iconGUID: Constants.Icons.RUN_INSTALLED_GUID, tooltip: "Run/Restart Installed")]
 		public void RunInstalled() {
-			StopRunningApp();
+			EnqueueOnMainThread(StopRunningApp);
 			Thread.Sleep(1000);
-			StartInstalledAppActivity();
+			EnqueueOnMainThread(StartInstalledAppActivity);
 		}
 		
 		[ButtonMethod(iconGUID: Constants.Icons.ADB_WIRELESS_GUID, tooltip: "ADB connect Wireless", condition: nameof(ConnectAdbWireless_Condition))]
@@ -36,16 +40,15 @@ namespace UDM {
 			
 			//connect
 			new ADBQuery($"connect {ip}:5555").SetDevice(m_deviceManager).Execute();
-			
-			CloseAllInstances();
+
+			EnqueueOnMainThread(CloseAllInstances);
 		}
 		
 		// ----
 		// conditions
 		
 		private bool ConnectAdbWireless_Condition() {
-			// return m_devicesManager.GetAndroids.All(device => !device.IsWireless);
-			return false;
+			return m_deviceManager.GetAndroids.All(device => !device.IsWireless);
 		}
 		
 		
