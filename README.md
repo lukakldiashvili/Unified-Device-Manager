@@ -1,7 +1,7 @@
 ![Unified Device Manager Banner](https://user-images.githubusercontent.com/42884387/225069757-bec7dd10-0d8d-4b87-be2a-2dea785a7a2c.png)
 
 <b>Quickly and easliy build and deploy on target devices for Unity</b>
-## Unified Device Manager
+## Unified Device Manager (Android)
 
 Features:
 - Build, Install/Deploy and Run
