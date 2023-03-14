@@ -12,7 +12,7 @@ Features:
 <br>
 
 <p align="center">
-  <img width="700" align="center" alt="demo" src="https://user-images.githubusercontent.com/42884387/225070929-a354a6a1-0322-419a-8d3d-302d3bf25bde.png">
+  <img width="400" align="center" alt="demo" src="https://user-images.githubusercontent.com/42884387/225070929-a354a6a1-0322-419a-8d3d-302d3bf25bde.png">
 </p>
 
 <br>
