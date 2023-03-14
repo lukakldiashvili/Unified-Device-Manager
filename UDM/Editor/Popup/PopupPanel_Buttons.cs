@@ -41,7 +41,7 @@ namespace UDM {
 			//connect
 			new ADBQuery($"connect {ip}:5555").SetDevice(m_deviceManager).Execute();
 
-			EnqueueOnMainThread(CloseAllInstances);
+			EnqueueOnMainThread(CloseAllWindows);
 		}
 		
 		// ----

@@ -26,7 +26,7 @@ namespace UDM {
 
 		[ToolbarButton(Constants.Icons.MAIN_ICON_GUID, isLeftSide: true)]
 		public static void OpenUDMPanel_Button() {
-			CloseAllInstances();
+			CloseAllWindows();
 
 			PopupPanel window = ScriptableObject.CreateInstance<PopupPanel>();
 
@@ -39,7 +39,7 @@ namespace UDM {
 			window.Focus();
 		}
 
-		public static void CloseAllInstances() {
+		public static void CloseAllWindows() {
 			var windows = (PopupPanel[])Resources.FindObjectsOfTypeAll(typeof(PopupPanel));
 
 			foreach (var window in windows) {
@@ -135,7 +135,17 @@ namespace UDM {
 		}
 
 		void GUI_TitleBar() {
-			EditorGUILayout.LabelField(new GUIContent(image: m_mainIconTexture, text: "Unified Device Manager"), GUI.skin.button);
+			EditorGUILayout.BeginHorizontal();
+
+			var maxHeight = GUILayout.MaxHeight(20);
+			
+			EditorGUILayout.LabelField(new GUIContent(image: m_mainIconTexture, text: "Unified Device Manager"), GUI.skin.button, maxHeight);
+
+			if (GUILayout.Button("X", GUI.skin.button, GUILayout.MaxWidth(20), maxHeight)) {
+				CloseAllWindows();	
+			}
+			
+			EditorGUILayout.EndHorizontal();
 		}
 
 		void GUI_DrawMainButtons() {
